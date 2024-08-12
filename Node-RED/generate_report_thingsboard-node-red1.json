@@ -1,0 +1,646 @@
+[
+    {
+        "id": "71feb341db0e15a2",
+        "type": "tab",
+        "label": "Generate report 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9600fafd793a77ed",
+        "type": "inject",
+        "z": "71feb341db0e15a2",
+        "name": "inject",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "2eb1f471ef147e2c"
+            ]
+        ]
+    },
+    {
+        "id": "79fd4832f775e912",
+        "type": "http request",
+        "z": "71feb341db0e15a2",
+        "name": "auth login",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://{{thingsboard_host}}/api/auth/login",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "Content-Type",
+                "valueType": "other",
+                "valueValue": "application/json"
+            },
+            {
+                "keyType": "other",
+                "keyValue": "Accept",
+                "valueType": "other",
+                "valueValue": "application/json"
+            }
+        ],
+        "x": 480,
+        "y": 80,
+        "wires": [
+            [
+                "2ef180cf1f7c186e"
+            ]
+        ]
+    },
+    {
+        "id": "74eaa512e54252cc",
+        "type": "debug",
+        "z": "71feb341db0e15a2",
+        "name": "debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "2eb1f471ef147e2c",
+        "type": "function",
+        "z": "71feb341db0e15a2",
+        "name": "authentification",
+        "func": "msg.headers = {};\nmsg.headers['Content-Type'] = 'application/json';\nmsg.payload = {\n    username: \"{{username}}\",\n    password: \"{{password}}\"\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 80,
+        "wires": [
+            [
+                "79fd4832f775e912"
+            ]
+        ]
+    },
+    {
+        "id": "2ef180cf1f7c186e",
+        "type": "change",
+        "z": "71feb341db0e15a2",
+        "name": "save token",
+        "rules": [
+            {
+                "t": "set",
+                "p": "token",
+                "pt": "flow",
+                "to": "payload.token",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 650,
+        "y": 80,
+        "wires": [
+            [
+                "74eaa512e54252cc"
+            ]
+        ]
+    },
+    {
+        "id": "24a03083805fac5d",
+        "type": "inject",
+        "z": "71feb341db0e15a2",
+        "name": "inject",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 180,
+        "wires": [
+            [
+                "d4610e897e791469"
+            ]
+        ]
+    },
+    {
+        "id": "d4610e897e791469",
+        "type": "function",
+        "z": "71feb341db0e15a2",
+        "name": "authentification",
+        "func": "// Configurar las cabeceras con el token JWT\nvar token = flow.get(\"token\");\nmsg.headers = {\n    \"Content-Type\": \"application/json\",\n    \"X-Authorization\": \"Bearer \" + token\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 180,
+        "wires": [
+            [
+                "6da5bf50490f98b6"
+            ]
+        ]
+    },
+    {
+        "id": "7528e522aaf3fc35",
+        "type": "http request",
+        "z": "71feb341db0e15a2",
+        "name": "get attributes",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "Content-Type",
+                "valueType": "other",
+                "valueValue": "application/json"
+            },
+            {
+                "keyType": "other",
+                "keyValue": "Accept",
+                "valueType": "other",
+                "valueValue": "application/json"
+            }
+        ],
+        "x": 450,
+        "y": 280,
+        "wires": [
+            [
+                "af74d93064e8835a",
+                "3f5e81d44bf65fdd"
+            ]
+        ]
+    },
+    {
+        "id": "0f4b93bd51f8f8dc",
+        "type": "http request",
+        "z": "71feb341db0e15a2",
+        "name": "get timeseries",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 480,
+        "y": 440,
+        "wires": [
+            [
+                "39b39508fb4dc328",
+                "11f182e506a62b23"
+            ]
+        ]
+    },
+    {
+        "id": "0d00a54b92f58a76",
+        "type": "debug",
+        "z": "71feb341db0e15a2",
+        "name": "debug 0",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "6da5bf50490f98b6",
+        "type": "http request",
+        "z": "71feb341db0e15a2",
+        "name": "get devices from client",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://{{thingsboard_host}}/api/customer/{{customer_id}}/devices?page=0&pageSize=2000",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 520,
+        "y": 180,
+        "wires": [
+            [
+                "66d520c0e30e121b"
+            ]
+        ]
+    },
+    {
+        "id": "66d520c0e30e121b",
+        "type": "function",
+        "z": "71feb341db0e15a2",
+        "name": "store devices",
+        "func": "// var devices = msg.payload;\n// var idObjects = {};\n\n// // Verifica que devices.data sea un arreglo antes de intentar recorrerlo\n// if (Array.isArray(devices.data)) {\n//     devices.data.forEach(function (device, index) {\n//         var idKey = 'id' + (index + 1);  // Genera las claves id1, id2, id3, ...\n//         idObjects[idKey] = device.id;   // Asigna el id del dispositivo correspondiente\n//     });\n// }\n\n// msg.payload = idObjects;\n\n// return msg;\n\nvar devices = msg.payload;\nvar idObjects = {};\n\n// Verifica que devices.data sea un arreglo antes de intentar recorrerlo\nif (Array.isArray(devices.data)) {\n    devices.data.forEach(function (device, index) {\n        var idKey = 'id' + (index + 1);  // Genera las claves id1, id2, id3, ...\n        idObjects[idKey] = device.id;   // Asigna el id del dispositivo correspondiente\n    });\n}\n\n// Guardar los IDs en una variable global\nglobal.set('deviceIds', idObjects);\n\n// También puedes guardarlos en el contexto de Node-RED\nflow.set('deviceIds', idObjects);  // Guardar en el contexto de flujo\ncontext.set('deviceIds', idObjects);  // Guardar en el contexto global\n\nmsg.payload = idObjects;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 180,
+        "wires": [
+            [
+                "0d00a54b92f58a76"
+            ]
+        ]
+    },
+    {
+        "id": "4cf5b89848b63b80",
+        "type": "function",
+        "z": "71feb341db0e15a2",
+        "name": "attributes",
+        "func": "// Obtener el token de acceso guardado\nvar accessToken = flow.get('token');\n\n// Obtener el ID del dispositivo desde la variable global\nvar deviceId = global.get('deviceIds').id1.id; // Aquí 'id1' es un ejemplo, puedes usar cualquier clave según tu estructura\n\n// Construir la URL completa\nvar url = 'http://{{thingsboard_host}}/api/plugins/telemetry/DEVICE/' + deviceId + '/values/attributes';\n\n// Devolver la URL como parte del mensaje\nmsg.url = url;\n\n// Configurar las cabeceras con el token de acceso\nmsg.headers = {\n    \"Content-Type\": \"application/json\",\n    \"X-Authorization\": \"Bearer \" + accessToken\n};\n\nreturn msg;\n\n// // Obtener los IDs de los dispositivos desde la variable global\n// var deviceIds = global.get('deviceIds');\n\n// // Inicializar un objeto para almacenar todos los mensajes de salida\n// var msgs = [];\n\n// // Iterar sobre cada dispositivo en deviceIds\n// Object.keys(deviceIds).forEach(function (key) {\n//     var deviceId = deviceIds[key]; // Obtener el ID del dispositivo\n//     var url = 'http://{{thingsboard_host}}/api/plugins/telemetry/DEVICE/' + deviceId + '/values/attributes';\n\n//     // Crear un nuevo mensaje para cada URL\n//     var newMsg = {\n//         url: url\n//     };\n\n//     // Agregar el mensaje al arreglo de mensajes\n//     msgs.push(newMsg);\n// });\n\n// // Devolver todos los mensajes para ser enviados a nodos http request o similar\n// return msgs;\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 280,
+        "wires": [
+            [
+                "7528e522aaf3fc35"
+            ]
+        ]
+    },
+    {
+        "id": "af74d93064e8835a",
+        "type": "debug",
+        "z": "71feb341db0e15a2",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "75bf77821144c962",
+        "type": "debug",
+        "z": "71feb341db0e15a2",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "3f5e81d44bf65fdd",
+        "type": "function",
+        "z": "71feb341db0e15a2",
+        "name": "save attributes",
+        "func": "// Verificar si la respuesta es válida\nif (msg.statusCode === 200) { // Asegúrate de ajustar según el código de estado correcto\n\n    // Guardar los valores en variables individuales\n    var payload = msg.payload; // Este es el array de objetos que recibes\n    \n    // Ejemplo: Guardar algunos valores específicos en variables\n    var num = payload.find(item => item.key === 'Num').value;\n    var active = payload.find(item => item.key === 'active').value;\n    var cajaString = payload.find(item => item.key === 'caja string').value;\n    // var campo = payload.find(item => item.key === 'campo').value;\n    // var canal1 = payload.find(item => item.key === 'canal 1').value;\n    // var canal2 = payload.find(item => item.key === 'canal 2').value;\n    // var canal3 = payload.find(item => item.key === 'canal 3').value;\n    // var canal4 = payload.find(item => item.key === 'canal 4').value;\n    var eui = payload.find(item => item.key === 'eui').value;\n    // var fechaHora = payload.find(item => item.key === 'fecha hora').value;\n    var harness = payload.find(item => item.key === 'harness').value;\n    // var inactivityAlarmTime = payload.find(item => item.key === 'inactivityAlarmTime').value;\n    // var inactivityTimeout = payload.find(item => item.key === 'inactivityTimeout').value;\n    var inversor = payload.find(item => item.key === 'inversor').value;\n    // var latitude = payload.find(item => item.key === 'latitude').value;\n    // var longitude = payload.find(item => item.key === 'longitude').value;\n    var powerStation = payload.find(item => item.key === 'power station').value;\n    var ubicacion = payload.find(item => item.key === 'ubicacion').value;\n    \n    // Guardar las variables en el contexto de Node-RED o donde las necesites\n    flow.set('num', num);\n    flow.set('active', active);\n    flow.set('cajaString', cajaString);\n    flow.set('eui', eui);\n    flow.set('harness', harness);\n    flow.set('inversor', inversor);\n    flow.set('powerStation', powerStation);\n    flow.set('ubicacion', ubicacion);\n    \n    // También puedes devolver las variables como parte del mensaje si lo necesitas\n    msg.num = num;\n    msg.active = active;\n    msg.cajaString = cajaString;\n    msg.eui = eui;\n    msg.harness = harness;\n    msg.inversor = inversor;\n    msg.powerStation = powerStation;\n    msg.ubicacion = ubicacion;\n    \n} else {\n    // Manejar el caso cuando la respuesta no es exitosa (por ejemplo, error HTTP)\n    node.error('Error: ' + msg.statusCode);\n}\n\n// Devolver el mensaje para continuar el flujo en Node-RED\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 340,
+        "wires": [
+            [
+                "75bf77821144c962"
+            ]
+        ]
+    },
+    {
+        "id": "b2a256ff15befc08",
+        "type": "function",
+        "z": "71feb341db0e15a2",
+        "name": "timeseries",
+        "func": "// Obtener el token de acceso guardado\nvar accessToken = flow.get('token');\n\n// Obtener el ID del dispositivo desde la variable global\nvar deviceId = global.get('deviceIds').id1.id; // Aquí 'id1' es un ejemplo, puedes usar cualquier clave según tu estructura\n\n// Construir la URL completa\nvar url = 'http://{{thingsboard_host}}/api/plugins/telemetry/DEVICE/' + deviceId + '/values/timeseries';\n\n// Devolver la URL como parte del mensaje\nmsg.url = url;\n\n// Configurar las cabeceras con el token de acceso\nmsg.headers = {\n    \"Content-Type\": \"application/json\",\n    \"X-Authorization\": \"Bearer \" + accessToken\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 440,
+        "wires": [
+            [
+                "0f4b93bd51f8f8dc"
+            ]
+        ]
+    },
+    {
+        "id": "39b39508fb4dc328",
+        "type": "debug",
+        "z": "71feb341db0e15a2",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "af759a3a4f070d58",
+        "type": "debug",
+        "z": "71feb341db0e15a2",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "11f182e506a62b23",
+        "type": "function",
+        "z": "71feb341db0e15a2",
+        "name": "save timeseries",
+        "func": "// Iterar sobre cada conjunto de datos y guardar los valores en variables\n\nvar msgDailyCounter = msg.payload.msgDailyCounter[0].value;\nvar data_corriente1 = msg.payload.data_corriente1[0].value;\nvar data_corriente2 = msg.payload.data_corriente2[0].value;\nvar data_corriente3 = msg.payload.data_corriente3[0].value;\nvar data_corriente4 = msg.payload.data_corriente4[0].value;\nvar rssi = msg.payload.rssi[0].value;\n// var snr = msg.payload.snr[0].value;\n// var firstMsg = msg.payload.firstMsg[0].value;\n// var date1 = msg.payload.date1[0].value;\n// var date2 = msg.payload.date2[0].value;\n\n// Guardar las variables en el contexto de Node-RED (flujo o contexto global)\nflow.set('msgDailyCounter', msgDailyCounter);\nflow.set('data_corriente1', data_corriente1);\nflow.set('data_corriente2', data_corriente2);\nflow.set('data_corriente3', data_corriente3);\nflow.set('data_corriente4', data_corriente4);\nflow.set('rssi', rssi);\n// flow.set('snr', snr);\n// flow.set('firstMsg', firstMsg);\n// flow.set('date1', date1);\n// flow.set('date2', date2);\n\n// Opcional: Devolver las variables como parte del mensaje si se necesitan en otro nodo\nmsg.msgDailyCounter = msgDailyCounter;\nmsg.data_corriente1 = data_corriente1;\nmsg.data_corriente2 = data_corriente2;\nmsg.data_corriente3 = data_corriente3;\nmsg.data_corriente4 = data_corriente4;\nmsg.rssi = rssi;\n// msg.snr = snr;\n// msg.firstMsg = firstMsg;\n// msg.date1 = date1;\n// msg.date2 = date2;\n\n// Devolver el mensaje para continuar el flujo en Node-RED\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 500,
+        "wires": [
+            [
+                "af759a3a4f070d58"
+            ]
+        ]
+    },
+    {
+        "id": "dce1929f21179621",
+        "type": "inject",
+        "z": "71feb341db0e15a2",
+        "name": "inject",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 280,
+        "wires": [
+            [
+                "4cf5b89848b63b80"
+            ]
+        ]
+    },
+    {
+        "id": "266a78fa446b9bcf",
+        "type": "inject",
+        "z": "71feb341db0e15a2",
+        "name": "inject",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 440,
+        "wires": [
+            [
+                "b2a256ff15befc08"
+            ]
+        ]
+    },
+    {
+        "id": "fed6894c4a30f539",
+        "type": "excel",
+        "z": "71feb341db0e15a2",
+        "name": "",
+        "file": "C:/Users/{{ruta_archivo}}/report-node-red.xlsx",
+        "x": 450,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d53226078651e1dc",
+        "type": "inject",
+        "z": "71feb341db0e15a2",
+        "name": "inject",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 620,
+        "wires": [
+            [
+                "c86386badae39bb8"
+            ]
+        ]
+    },
+    {
+        "id": "c86386badae39bb8",
+        "type": "function",
+        "z": "71feb341db0e15a2",
+        "name": "create excel",
+        "func": "const xlsx = global.get('xlsx');  // Asume que xlsx está disponible globalmente, si no, asegúrate de que se importe correctamente\n\n// Recoger las variables del contexto de flujo\nconst variables = {\n    num: flow.get('num'),\n    active: flow.get('active'),\n    cajaString: flow.get('cajaString'),\n    eui: flow.get('eui'),\n    harness: flow.get('harness'),\n    inversor: flow.get('inversor'),\n    powerStation: flow.get('powerStation'),\n    ubicacion: flow.get('ubicacion'),\n    msgDailyCounter: flow.get('msgDailyCounter'),\n    data_corriente1: flow.get('data_corriente1'),\n    data_corriente2: flow.get('data_corriente2'),\n    data_corriente3: flow.get('data_corriente3'),\n    data_corriente4: flow.get('data_corriente4'),\n    rssi: flow.get('rssi')\n};\n\n// Convertir el objeto de variables a un arreglo de arreglos (AoA)\nconst worksheetData = [];\n\n// Encabezados de las columnas\nconst headers = Object.keys(variables);\nworksheetData.push(headers);\n\n// Valores de las variables\nconst values = headers.map(key => variables[key]);\nworksheetData.push(values);\n\n// Crear una hoja de cálculo\nconst workbook = xlsx.utils.book_new();\nconst worksheet = xlsx.utils.aoa_to_sheet(worksheetData);\nxlsx.utils.book_append_sheet(workbook, worksheet, \"Data\");\n\n// Escribir el archivo\nconst filePath = \"C:/Users/{{ruta_archivo}}/report-node-red.xlsx\";  // Ruta donde se guardará el archivo\nxlsx.writeFile(workbook, filePath);\n\nmsg.payload = `Archivo creado en ${filePath}`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 620,
+        "wires": [
+            [
+                "fed6894c4a30f539"
+            ]
+        ]
+    },
+    {
+        "id": "ef37428136138ee4",
+        "type": "inject",
+        "z": "71feb341db0e15a2",
+        "name": "inject",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 720,
+        "wires": [
+            [
+                "8d5e167a6afd1ad6"
+            ]
+        ]
+    },
+    {
+        "id": "8d5e167a6afd1ad6",
+        "type": "function",
+        "z": "71feb341db0e15a2",
+        "name": "function",
+        "func": "msg = {\n    attachments : {\n        filename: 'report.xlsx',\n        path: 'C:/Users/{{ruta_archivo}}/report-node-red.xlsx'\n    }\n}\nmsg.payload = \"Adjunto el fichero del reporte\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 720,
+        "wires": [
+            [
+                "f2ac8d6a1340a37e"
+            ]
+        ]
+    },
+    {
+        "id": "f2ac8d6a1340a37e",
+        "type": "e-mail",
+        "z": "71feb341db0e15a2",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "secure": true,
+        "tls": true,
+        "name": "{{correo_electrónico}}",
+        "dname": "email",
+        "x": 430,
+        "y": 720,
+        "wires": []
+    }
+]
